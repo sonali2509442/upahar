@@ -1,6 +1,7 @@
 // controllers/reviewController.js
 import Review from "../models/Review.js";
-import Product from "../models/Product.js";
+import Product from "../models/product.js";
+
 import Order from "../models/Order.js"; // if you need to mark item rated
 
 export const addReview = async (req, res) => {
