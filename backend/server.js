@@ -79,7 +79,10 @@ app.use("/api/reviews", reviewRoutes);
 
 // ❌ REMOVE app.listen()
 // ✅ ADD export for Vercel
-export default app;
+export default (req, res) => {
+  app(req, res);
+};
+
 
 
 
