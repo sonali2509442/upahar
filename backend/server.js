@@ -18,23 +18,26 @@ import qrRoutes from "./routes/qrRoutes.js";
 import { stripeWebhooks } from './controllers/orderController.js';
 import reviewRoutes from "./routes/reviewRoutes.js";
 
-
-
-
-
-
 const app = express();
-const port = process.env.PORT || 5000;
 
-await connectDB();
-await connectCloudinary();
+// ✅ Wrap async connections inside an async function
+const initServer = async () => {
+  try {
+    await connectDB();
+    await connectCloudinary();
+    console.log("✅ Database and Cloudinary connected");
+  } catch (err) {
+    console.error("❌ Connection error:", err.message);
+  }
+};
+
+// Call the function (non-blocking)
+initServer();
 
 // Allowed origins
 const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
-app.post('/stripe', express.raw({type: 'application/json'}), 
- stripeWebhooks)
 
-
+app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
 
 // Middleware
 app.use(express.json());
@@ -51,55 +54,33 @@ app.use(cors({
 }));
 
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || "default_secret",
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // true in production with HTTPS
+    secure: false,
     maxAge: 24 * 60 * 60 * 1000,
   },
 }));
 
-
-
-
-
-
-
 // Routes
-app.get('/', (req, res) => res.send('hello from backend'));
+app.get('/', (req, res) => res.send('Backend is running on Vercel 🚀'));
 app.use('/api/user', userRoute);
 app.use('/api/seller', sellerRoute);
 app.use('/api/product', productRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/address', addressRouter);
-
-app.use("/uploads", express.static("uploads"));
-
 app.use('/api/orders', orderRouter);
-
-
-app.listen(port, () => {
-  console.log(`server running on http://localhost:${port}`);
-});
-
-
-
-//for calender feature
-app.use('/api/reminders', reminderRouter)
-
+app.use("/uploads", express.static("uploads"));
+app.use('/api/reminders', reminderRouter);
 app.use("/api/gift-reminder", giftReminderRoutes);
-
-
-
 app.use("/api/qr", qrRoutes);
-
-
-
-
-
-
 app.use("/api/reviews", reviewRoutes);
+
+// ❌ REMOVE app.listen()
+// ✅ ADD export for Vercel
+export default app;
+
 
 
 
