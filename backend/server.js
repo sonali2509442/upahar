@@ -35,7 +35,7 @@ const initServer = async () => {
 initServer();
 
 // Allowed origins
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'https://upahar-one.vercel.app'];
 
 app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
 
