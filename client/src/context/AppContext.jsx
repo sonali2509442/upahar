@@ -31,7 +31,7 @@ export const AppContextProvider = ({ children }) => {
  
   const fetchSeller = async () => {
     try {
-      const { data } = await axios.get("/api/seller/is-sauth");
+      const { data } = await axios.get("/api/seller/is-sauth", { withCredentials: true });
       setIsSeller(data.success);
     } catch (error) {
       console.error("fetchSeller error:", error);
