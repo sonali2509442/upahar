@@ -20,7 +20,7 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 
 const app = express();
 
-// ✅ Database + Cloudinary connection
+// ✅ Connect DB + Cloudinary
 const initServer = async () => {
   try {
     await connectDB();
@@ -35,9 +35,9 @@ initServer();
 // ✅ Stripe webhook (must come before JSON parser)
 app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
 
-// ✅ CORS setup
+// ✅ CORS setup — must come before session
 const allowedOrigins = [
-  "https://upahar-one.vercel.app", // frontend
+  "https://upahar-one.vercel.app", // frontend on vercel
   "http://localhost:5173",
   "http://localhost:5174",
 ];
@@ -45,16 +45,16 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: allowedOrigins,
-    credentials: true,
+    credentials: true, // allow cookies
   })
 );
 
-// ✅ JSON + Cookies
-app.use(express.json());
+// ✅ Parse cookies + JSON
 app.use(cookieParser());
-app.set("trust proxy", 1); // 🟢 add this line
+app.use(express.json());
+app.set("trust proxy", 1); // important for secure cookies on vercel
 
-// ✅ Express-session (important for seller login)
+// ✅ Session (use after CORS)
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "default_secret",
@@ -63,7 +63,7 @@ app.use(
     cookie: {
       httpOnly: true,
       sameSite: "none",
-      secure: true, // true for vercel
+      secure: true, // must be true on vercel
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
   })
@@ -82,5 +82,5 @@ app.use("/api/gift-reminder", giftReminderRoutes);
 app.use("/api/qr", qrRoutes);
 app.use("/api/reviews", reviewRoutes);
 
-// ✅ Vercel export (for serverless function)
+// ✅ Vercel export
 export default app;
