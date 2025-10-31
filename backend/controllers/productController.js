@@ -79,18 +79,44 @@ export const changeStock = async (req, res) => {
 };
 
 // Get products for the logged-in seller
-export const getProductsBySeller = async (req, res) => {
+// ✅ Get top-selling products (Bestsellers)
+export const getBestsellers = async (req, res) => {
   try {
-    const seller = req.seller;
-    if (!seller) return res.status(401).json({ success: false, message: 'Not authenticated' });
+    const limit = parseInt(req.query.limit, 10) || 10;
 
-    const products = await Product.find({ seller: seller._id }).sort({ createdAt: -1 });
-    res.status(200).json({ success: true, products });
+    // find only valid products with soldCount >= 0 and inStock true
+    const products = await Product.find({
+      inStock: true,
+      soldCount: { $gte: 0 },
+    })
+      .sort({ soldCount: -1 })
+      .limit(limit)
+      .select("name price offerPrice images soldCount category") // limit fields
+      .lean();
+
+    if (!products || products.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No bestsellers found",
+        products: [],
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Bestsellers fetched successfully",
+      products,
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: err.message });
+    console.error("🔥 getBestsellers error:", err.message);
+    return res.status(500).json({
+      success: false,
+      message: "Backend error: could not load products",
+      error: err.message,
+    });
   }
 };
+
 
 // Delete product (protected)
 export const deleteProduct = async (req, res) => {
