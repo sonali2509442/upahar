@@ -3,6 +3,8 @@
 import path from 'path';
 import fs from 'fs';
 import Product from "../models/product.js";
+import { cloudinary } from "../configs/cloudinary.js";
+
 
 // Add product — expects authSeller ran earlier so req.seller exists
 export const addProduct = async (req, res) => {
