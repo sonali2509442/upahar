@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL || "https://upahar-backend.vercel.app";
 axios.defaults.withCredentials = true;
 
 export const AppContext = createContext();

@@ -35,7 +35,11 @@ const initServer = async () => {
 initServer();
 
 // Allowed origins
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'https://upahar-one.vercel.app'];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://upahar-one.vercel.app" // <- your Vercel frontend URL (replace if different)
+];
 
 app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
 
@@ -44,6 +48,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
   origin: function (origin, callback) {
+    // allow requests with no origin (mobile apps, curl) or from allowedOrigins
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -53,13 +58,16 @@ app.use(cors({
   credentials: true
 }));
 
+
 app.use(session({
   secret: process.env.SESSION_SECRET || "default_secret",
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false,
-    maxAge: 24 * 60 * 60 * 1000,
+    // when deployed, frontend and backend are different origins -> need sameSite none and secure true
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production", // true on HTTPS (production)
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
   },
 }));
 
