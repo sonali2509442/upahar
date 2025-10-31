@@ -79,7 +79,7 @@ app.use('/api/product', productRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/address', addressRouter);
 app.use('/api/orders', orderRouter);
-app.use("/uploads", express.static("uploads"));
+
 app.use('/api/reminders', reminderRouter);
 app.use("/api/gift-reminder", giftReminderRoutes);
 app.use("/api/qr", qrRoutes);

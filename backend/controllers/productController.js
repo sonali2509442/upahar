@@ -14,11 +14,15 @@ export const addProduct = async (req, res) => {
 
     const productData = req.body.productData ? JSON.parse(req.body.productData) : {};
 
-    const images = (req.files || []).map(file => {
-      if (file.filename) return `/uploads/${file.filename}`;
-      if (file.path) return file.path;
-      return null;
-    }).filter(Boolean);
+      const images = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: "upahar_products",
+        });
+        images.push(result.secure_url);
+      }
+    }
 
     const newProduct = await Product.create({
       ...productData,
