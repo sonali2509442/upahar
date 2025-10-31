@@ -32,7 +32,7 @@ const SellerLogin = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/seller/login",
+        `${import.meta.env.VITE_BACKEND_URL}/api/seller/login`,
         { email, password },
         { withCredentials: true }
       );
