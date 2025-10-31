@@ -128,7 +128,7 @@ const SplashScreen = ({ onFinish }) => {
 
       {/* 🎁 Floating Gift Elements */}
       <motion.img
-        src="/flobou-removebg-preview.png"
+        src="/images/flobou-removebg-preview.png"
         alt="Bouquet"
         initial={{ x: "-100vw", y: "-100vh", rotate: -45, opacity: 0 }}
         animate={{ x: 0, y: 0, rotate: 0, opacity: 1 }}
@@ -137,7 +137,7 @@ const SplashScreen = ({ onFinish }) => {
       />
 
       <motion.img
-        src="/redg-removebg-preview.png"
+        src="/images/redg-removebg-preview.png"
         alt="Gift Box"
         initial={{ x: "100vw", y: "-100vh", rotate: 45, opacity: 0 }}
         animate={{ x: 0, y: 0, rotate: 0, opacity: 1 }}
@@ -151,7 +151,7 @@ const SplashScreen = ({ onFinish }) => {
       />
 
       <motion.img
-        src="/chocolo-removebg-preview.png"
+        src="/images/chocolo-removebg-preview.png"
         alt="Chocolate"
         initial={{ x: "-100vw", y: "100vh", rotate: -30, opacity: 0 }}
         animate={{ x: 0, y: 0, rotate: 0, opacity: 1 }}
@@ -165,7 +165,7 @@ const SplashScreen = ({ onFinish }) => {
       />
 
       <motion.img
-        src="/envp-removebg-preview.png"
+        src="/images/envp-removebg-preview.png"
         alt="Greeting Card"
         initial={{ x: "100vw", y: "100vh", rotate: 30, opacity: 0 }}
         animate={{ x: 0, y: 0, rotate: 0, opacity: 1 }}
@@ -186,7 +186,7 @@ const SplashScreen = ({ onFinish }) => {
         className="relative flex items-center justify-center mt-8"
       >
         <img
-          src="/gift-box-flowers-close-up.jpg"
+          src="/images/gift-box-flowers-close-up.jpg"
           alt="Upahar Logo"
           className="w-52 h-52 md:w-64 md:h-64 rounded-full shadow-2xl ring-4 ring-rose-200"
         />
