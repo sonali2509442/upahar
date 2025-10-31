@@ -48,27 +48,26 @@ app.use(
     credentials: true,
   })
 );
+app.set("trust proxy", 1); // Needed for secure cookies on Render/Vercel
 
-app.set("trust proxy", 1);
-
-// ✅ Middlewares
-app.use(cookieParser());
-app.use(express.json());
-
-// ✅ Session setup
+// ✅ Session first (before JSON or cookieParser)
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "default_secret",
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: {
       httpOnly: true,
-      secure: true,
+      secure: true, // true for HTTPS
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
+
+app.use(cookieParser());
+app.use(express.json());
 
 // ✅ Routes
 app.get("/", (req, res) => res.send("Backend is running on Vercel 🚀"));
