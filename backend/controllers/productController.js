@@ -1,8 +1,8 @@
 
 
-import Product from '../models/product.js';
 import path from 'path';
 import fs from 'fs';
+import Product from "../models/product.js";
 
 // Add product — expects authSeller ran earlier so req.seller exists
 export const addProduct = async (req, res) => {

@@ -3,7 +3,7 @@ import Review from "../models/Review.js";
 
 
 import Order from "../models/Order.js"; // if you need to mark item rated
-import Product from "../models/Product.js";
+import Product from "../models/product.js";
 
 
 export const addReview = async (req, res) => {
