@@ -38,7 +38,8 @@ initServer();
 
 // Allowed origins
 const allowedOrigins = [
-  "https://upahar-one.vercel.app" // <- your Vercel frontend URL (replace if different)
+  "https://upahar-one.vercel.app",
+  "http://localhost:5173", // <- your Vercel frontend URL (replace if different)
 ];
 
 app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
