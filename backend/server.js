@@ -45,15 +45,15 @@ app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: function (origin, callback) {
-    // allow requests with no origin (mobile apps, curl) or from allowedOrigins
+  origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.log("❌ CORS blocked origin:", origin);
+      callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true
+  credentials: true,
 }));
 
 
