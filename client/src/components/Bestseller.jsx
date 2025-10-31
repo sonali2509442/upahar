@@ -100,7 +100,7 @@ const Bestseller = () => {
   const { addToCart, currency } = useAppContext();
   const navigate = useNavigate();
 
-  const baseURL = import.meta.env.VITE_IMAGE_URL || "http://localhost:5000";
+  const baseURL = import.meta.env.VITE_IMAGE_URL || "https://upahar-backend.vercel.app";
 
   useEffect(() => {
     axios
