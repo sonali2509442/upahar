@@ -79,6 +79,32 @@ export const changeStock = async (req, res) => {
 };
 
 // Get products for the logged-in seller
+export const getProductsBySeller = async (req, res) => {
+  try {
+    const seller = req.seller;
+    if (!seller) return res.status(401).json({ success: false, message: 'Not authenticated' });
+
+    const products = await Product.find({ seller: seller._id }).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, products });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// Delete product (protected)
+export const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Product.findByIdAndDelete(id);
+    res.status(200).json({ success: true, message: 'Product deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ✅ Get top-selling products (Bestsellers)
 // ✅ Get top-selling products (Bestsellers)
 export const getBestsellers = async (req, res) => {
   try {
@@ -117,30 +143,3 @@ export const getBestsellers = async (req, res) => {
   }
 };
 
-
-// Delete product (protected)
-export const deleteProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Product.findByIdAndDelete(id);
-    res.status(200).json({ success: true, message: 'Product deleted successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-// ✅ Get top-selling products (Bestsellers)
-export const getBestsellers = async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const products = await Product.find({ inStock: true })
-      .sort({ soldCount: -1 })
-      .limit(limit)
-      .lean();
-    return res.json({ success: true, products });
-  } catch (err) {
-    console.error('getBestsellers error:', err);
-    return res.status(500).json({ success: false, message: err.message });
-  }
-};
