@@ -14,12 +14,13 @@ import orderRouter from "./routes/orderRoutes.js";
 import reminderRouter from "./routes/reminderRoutes.js";
 import giftReminderRoutes from "./routes/giftReminderRoutes.js";
 import qrRoutes from "./routes/qrRoutes.js";
-import { stripeWebhooks } from "./controllers/orderController.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import { stripeWebhooks } from "./controllers/orderController.js";
+import cors from "cors";
 
 const app = express();
 
-// ✅ Connect Database and Cloudinary
+// ✅ Connect Database + Cloudinary
 const initServer = async () => {
   try {
     await connectDB();
@@ -31,37 +32,37 @@ const initServer = async () => {
 };
 initServer();
 
-// ✅ Stripe webhook (before JSON parser)
+// ✅ Stripe webhook (before express.json)
 app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
 
-// ✅ CORS setup (FULL FIX for Vercel)
+// ✅ CORS configuration (robust)
 const allowedOrigins = [
-  "https://upahar-one.vercel.app", // your frontend
+  "https://upahar-one.vercel.app", // frontend deployed
   "http://localhost:5173",
   "http://localhost:5174",
 ];
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-  next();
-});
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
-// ✅ Trust proxy for Vercel/Render secure cookies
+// ✅ Trust proxy for secure cookies (Vercel/Render)
 app.set("trust proxy", 1);
 
-// ✅ Session middleware (must come before routes)
+// ✅ Middlewares
+app.use(cookieParser());
+app.use(express.json());
+
+// ✅ Session middleware
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "default_secret",
@@ -70,21 +71,19 @@ app.use(
     proxy: true,
     cookie: {
       httpOnly: true,
-      secure: true, // true for HTTPS
+      secure: true, // HTTPS only
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
   })
 );
 
-app.use(cookieParser());
-app.use(express.json());
-
-// ✅ Routes
+// ✅ Root route
 app.get("/", (req, res) => {
   res.send("🚀 Upahar Backend is running successfully!");
 });
 
+// ✅ API Routes
 app.use("/api/user", userRoute);
 app.use("/api/seller", sellerRoute);
 app.use("/api/product", productRouter);
@@ -96,4 +95,16 @@ app.use("/api/gift-reminder", giftReminderRoutes);
 app.use("/api/qr", qrRoutes);
 app.use("/api/reviews", reviewRoutes);
 
+// ✅ Error handler (so CORS headers always sent)
+app.use((err, req, res, next) => {
+  console.error("Server Error:", err);
+  if (!res.headersSent) {
+    res.status(500).json({
+      success: false,
+      message: err.message || "Internal Server Error",
+    });
+  }
+});
+
 export default app;
+
