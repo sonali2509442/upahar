@@ -77,6 +77,15 @@ app.use("/api/gift-reminder", giftReminderRoutes);
 app.use("/api/qr", qrRoutes);
 app.use("/api/reviews", reviewRoutes);
 
+
+const PORT = process.env.PORT || 5000;
+
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  });
+}
+
 // ❌ REMOVE app.listen()
 // ✅ ADD export for Vercel
 export default app;

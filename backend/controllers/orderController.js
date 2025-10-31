@@ -1,6 +1,6 @@
 // controllers/orderController.js
 import Order from "../models/Order.js";
-import Product from "../models/Product.js";
+import Product from "../models/product.js";
 import mongoose from "mongoose";
 import generateQRCode from "../utils/generateQRCode.js";
 import Stripe from "stripe";
