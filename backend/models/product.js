@@ -20,4 +20,4 @@ const productSchema = new mongoose.Schema(
 productSchema.index({ soldCount: -1 });
 const Product = mongoose.models.Product || mongoose.model("Product", productSchema);
 
-export default product;
+export default Product;

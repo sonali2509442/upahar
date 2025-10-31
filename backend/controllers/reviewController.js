@@ -3,7 +3,7 @@ import Review from "../models/Review.js";
 
 
 import Order from "../models/Order.js"; // if you need to mark item rated
-import product from "../models/product.js";
+import Product from "../models/Product.js";
 
 
 export const addReview = async (req, res) => {
@@ -23,7 +23,7 @@ export const addReview = async (req, res) => {
     // Update product average rating (simple recompute)
     const reviews = await Review.find({ productId });
     const avg = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
-    await product.findByIdAndUpdate(productId, { averageRating: avg });
+    await Product.findByIdAndUpdate(productId, { averageRating: avg });
 
     // Optionally: mark order item as rated so user can't rate same order item again
     if (orderId && typeof orderItemIndex === "number") {
