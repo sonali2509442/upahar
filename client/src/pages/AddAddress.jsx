@@ -149,7 +149,7 @@ const AddAddress = () => {
       <div className="hidden md:flex md:w-1/2 justify-center">
         <img
           className="w-[400px] h-[400px] object-cover rounded-2xl shadow-md"
-          src="/src/assets/satin-bow-gift-boxes-party-hat-paper-bag-pink-background (1).jpg"
+          src="/images/top-view-gift-box-with-pom-poms-stars.jpg"
           alt="Gift"
         />
       </div>
