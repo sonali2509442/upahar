@@ -44,8 +44,8 @@ export const login = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -72,7 +72,7 @@ export const isauth = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    res.clearCookie("token", { httpOnly: true, secure: false, sameSite: "strict" });
+    res.clearCookie("token", { httpOnly: true, secure: true , sameSite: "none" });
     return res.json({ success: true, message: "Logout successfully" });
   } catch (error) {
     console.log(error.message);
