@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema(
     category: { type: String, required: true },
     inStock: { type: Boolean, default: true },
     seller: { type: mongoose.Schema.Types.ObjectId, ref: "Seller", required: true },
-    sellerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Seller', required: true },
+    
 
       soldCount: { type: Number, default: 0 },
   isBestseller: { type: Boolean, default: false }, // <--- add this
