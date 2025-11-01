@@ -59,7 +59,7 @@ const Cart = () => {
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
-        const { data } = await axios.post("/api/address/get");
+        const { data } = await axios.post("/api/address/get", {}, { withCredentials: true });
         if (data.success && data.addresses.length > 0) {
           setAddresses(data.addresses);
           setSelectedAddress(data.addresses[0]);
