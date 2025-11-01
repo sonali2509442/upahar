@@ -33,7 +33,7 @@ const GiftReminder = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/gift-reminder", reminder);
+      const res = await axios.post("https://upahar-backend.onrender.com/api/gift-reminder", reminder);
       if (res.data.success) {
         toast.success("🎁 Reminder added!");
         setReminder({ name: "", occasion: "", date: "", note: "" });
@@ -46,7 +46,7 @@ const GiftReminder = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/gift-reminder/${id}`);
+      await axios.delete(`https://upahar-backend.onrender.com/api/gift-reminder/${id}`);
       toast.success("Reminder deleted!");
       fetchReminders();
     } catch {
