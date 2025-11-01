@@ -100,23 +100,26 @@ const Bestseller = () => {
   const { addToCart, currency } = useAppContext();
   const navigate = useNavigate();
 
-  const baseURL = import.meta.env.VITE_IMAGE_URL || "https://upahar-backend.vercel.app";
+  const apiURL = import.meta.env.VITE_BACKEND_URL || "https://upahar-backend.vercel.app";
+const imageBase = import.meta.env.VITE_IMAGE_URL || apiURL;
 
-  useEffect(() => {
-    axios
-      .get(`${baseURL}/api/product/bestsellers`, { withCredentials: true })
-      .then((res) => {
-        if (res.data.success) setBestsellers(res.data.products);
-      })
-      .catch((err) => console.error("Error fetching bestsellers:", err));
-  }, []);
 
-  const getFullImageURL = (img) => {
-    if (!img) return "/fallback.png";
-    if (img.startsWith("http")) return img;
-    if (img.startsWith("/uploads")) return `${baseURL}${img}`;
-    return `${baseURL}/uploads/${img}`;
-  };
+ useEffect(() => {
+  axios
+    .get(`${apiURL}/api/product/bestsellers`, { withCredentials: true })
+    .then((res) => {
+      console.log("✅ Bestsellers:", res.data);
+      if (res.data.success) setBestsellers(res.data.products);
+    })
+    .catch((err) => console.error("Error fetching bestsellers:", err));
+}, []);
+
+const getFullImageURL = (img) => {
+  if (!img) return "/fallback.png";
+  if (img.startsWith("http")) return img;
+  if (img.startsWith("/uploads")) return `${imageBase}${img}`;
+  return `${imageBase}/uploads/${img}`;
+};
 
   const handleProductClick = (category, id) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
