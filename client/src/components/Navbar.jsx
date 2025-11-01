@@ -55,7 +55,7 @@ const Navbar = () => {
       </NavLink>
 
       {/* Desktop Menu */}
-      <div className="hidden sm:flex items-center gap-6">
+      <div className="flex items-center gap-6">
         <NavLink to="/">Home</NavLink>
         <NavLink to="/products">All Products</NavLink>
         <NavLink to="/contact">Contact</NavLink>
