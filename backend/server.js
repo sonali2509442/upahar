@@ -1,9 +1,11 @@
 import dotenv from "dotenv";
 dotenv.config();
+import connectDB from "./configs/db.js";
+connectDB();
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import express from "express";
-import connectDB from "./configs/db.js";
+
 import userRoute from "./routes/userRoute.js";
 import sellerRoute from "./routes/sellerRoutes.js";
 import connectCloudinary from "./configs/cloudinary.js";

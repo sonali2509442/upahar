@@ -16,7 +16,7 @@ const ProductDetails = () => {
   const [qrData, setQrData] = useState("");
   const [showQRModal, setShowQRModal] = useState(false);
 
-  const baseURL = import.meta.env.VITE_IMAGE_URL || "http://localhost:5000";
+  const baseURL = import.meta.env.VITE_IMAGE_URL || "https://upahar-backend.vercel.app";
 
   // ✅ Helper: Get full image path
   const getFullImageURL = (img) => {

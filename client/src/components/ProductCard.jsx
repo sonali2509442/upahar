@@ -8,7 +8,8 @@ const ProductCard = ({ product }) => {
 
   // Helper to get product image
   const getProductImage = () => {
-    const baseURL = "http://localhost:5000";
+    const baseURL =  import.meta.env.VITE_IMAGE_URL || "https://upahar-backend.vercel.app";
+;
     if (Array.isArray(product.images) && product.images.length > 0) {
       const img = product.images[0];
       return img.startsWith("http") ? img : `${baseURL}${img.startsWith('/') ? img : '/' + img}`;
