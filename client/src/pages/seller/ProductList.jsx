@@ -41,7 +41,7 @@ const ProductList = () => {
     );
 
     try {
-      const { data } = await axios.post("/api/product/stock", { id, inStock: newInStock });
+      const { data } = await axios.post("/api/product/stock", { id, inStock: newInStock },{ withCredentials: true });
       if (data.success) toast.success(data.message);
       else {
         toast.error(data.message);
