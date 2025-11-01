@@ -35,7 +35,7 @@ const SellerRegister = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/seller/seller-register",
+        "https://upahar-backend.vercel.app/api/seller/seller-register",
         formData
       );
       if (res.data.success) {
