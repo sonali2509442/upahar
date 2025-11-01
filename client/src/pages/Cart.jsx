@@ -26,7 +26,7 @@ const Cart = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentOption, setPaymentOption] = useState("COD");
 
-  const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_URL || "http://localhost:5000/uploads";
+  const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_URL || "https://upahar-backend.vercel.app/uploads";
 
   const getFullImageURL = (img) => {
     if (!img) return "/fallback.png";
