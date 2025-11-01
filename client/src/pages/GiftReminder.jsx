@@ -15,7 +15,7 @@ const GiftReminder = () => {
 
   const fetchReminders = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/gift-reminder");
+      const res = await axios.get("https://upahar-backend.vercel.app/api/gift-reminder");
       if (res.data.success) setReminders(res.data.reminders);
     } catch (error) {
       toast.error("Could not load reminders");
@@ -33,7 +33,7 @@ const GiftReminder = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("https://upahar-backend.onrender.com/api/gift-reminder", reminder);
+      const res = await axios.post("https://upahar-backend.vercel.app/api/gift-reminder", reminder);
       if (res.data.success) {
         toast.success("🎁 Reminder added!");
         setReminder({ name: "", occasion: "", date: "", note: "" });
@@ -46,7 +46,7 @@ const GiftReminder = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://upahar-backend.onrender.com/api/gift-reminder/${id}`);
+      await axios.delete(`https://upahar-backend.vercel.app/api/gift-reminder/${id}`);
       toast.success("Reminder deleted!");
       fetchReminders();
     } catch {

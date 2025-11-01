@@ -40,6 +40,7 @@ app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
 // ✅ CORS configuration (robust)
 const allowedOrigins = [
   "https://upahar-one.vercel.app", // frontend deployed
+  "https://upahar-backend.vercel.app",
   "http://localhost:5173",
   "http://localhost:5174",
 ];
