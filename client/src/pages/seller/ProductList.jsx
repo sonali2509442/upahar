@@ -14,8 +14,23 @@ const ProductList = () => {
   };
 
   useEffect(() => {
-    if (allProducts?.length > 0) setProducts(allProducts);
-  }, [allProducts]);
+  const fetchSellerProducts = async () => {
+    try {
+      const { data } = await axios.get("/api/product/seller", { withCredentials: true });
+      if (data.success) {
+        setProducts(data.products);
+      } else {
+        setProducts([]);
+      }
+    } catch (error) {
+      console.error("Error loading seller products:", error);
+      setProducts([]);
+    }
+  };
+
+  fetchSellerProducts();
+}, []);
+
 
   const toggleStock = async (id, currentStock) => {
     const newInStock = !currentStock;
