@@ -6,7 +6,7 @@ const connectDB = async () => {
       throw new Error("❌ Missing MONGO_URI environment variable");
     }
 
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
