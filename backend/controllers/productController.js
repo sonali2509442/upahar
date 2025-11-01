@@ -110,22 +110,19 @@ export const getBestsellers = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit, 10) || 10;
 
-    // find only valid products with soldCount >= 0 and inStock true
-    const products = await Product.find({
-      inStock: true,
-      soldCount: { $gte: 0 },
-    })
+    let products = await Product.find({ inStock: true })
       .sort({ soldCount: -1 })
       .limit(limit)
-      .select("name price offerPrice images soldCount category") // limit fields
+      .select("name price offerPrice images soldCount category")
       .lean();
 
-    if (!products || products.length === 0) {
-      return res.status(200).json({
-        success: true,
-        message: "No bestsellers found",
-        products: [],
-      });
+    // fallback: if no products sold yet, show latest products
+    if (!products.length) {
+      products = await Product.find({ inStock: true })
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .select("name price offerPrice images soldCount category")
+        .lean();
     }
 
     return res.status(200).json({
@@ -135,11 +132,10 @@ export const getBestsellers = async (req, res) => {
     });
   } catch (err) {
     console.error("🔥 getBestsellers error:", err.message);
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: "Backend error: could not load products",
       error: err.message,
     });
   }
 };
-
