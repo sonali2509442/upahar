@@ -3,6 +3,8 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { Gift, CalendarHeart, Trash2 } from "lucide-react";
+import { useAppContext } from "../context/AppContext";
+
 
 const GiftReminder = () => {
   const [reminder, setReminder] = useState({
@@ -12,10 +14,12 @@ const GiftReminder = () => {
     note: "",
   });
   const [reminders, setReminders] = useState([]);
+  const { user } = useAppContext();
+
 
  const fetchReminders = async () => {
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
+   
     if (!user || !user._id) {
       toast.error("Please log in to view reminders");
       return;
@@ -41,8 +45,9 @@ const GiftReminder = () => {
   };
 
  const handleSubmit = async (e) => {
+
   e.preventDefault();
-  const user = JSON.parse(localStorage.getItem("user"));
+  
   if (!user || !user._id) {
     toast.error("Please log in before adding reminders");
     return;
