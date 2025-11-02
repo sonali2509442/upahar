@@ -3,10 +3,10 @@ import Reminder from '../models/reminderModel.js';
 // Create a reminder
 export const createReminder = async (req, res) => {
   try {
-    const { name, occasion, date, note } = req.body;
+    const { name, occasion, date, note, userId } = req.body;
 
     // Validate required fields
-    if (!name || !occasion || !date) {
+    if (!name || !occasion || !date || !userId) {
       return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
 
@@ -29,23 +29,36 @@ export const createReminder = async (req, res) => {
 // Get all reminders
 export const getReminders = async (req, res) => {
   try {
-    const reminders = await Reminder.find().sort({ date: 1 });
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ success: false, message: "User ID is required" });
+    }
+
+    const reminders = await Reminder.find({ userId }).sort({ date: 1 });
     res.json({ success: true, reminders });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Error fetching reminders', error: error.message });
+    console.error("Error fetching reminders:", error.message);
+    res.status(500).json({ success: false, message: "Error fetching reminders" });
   }
-};
+}; 
 
 // Delete a reminder
 export const deleteReminder = async (req, res) => {
   try {
     const { id } = req.params;
-    await Reminder.findByIdAndDelete(id);
-    res.json({ success: true, message: 'Reminder deleted successfully' });
+    const { userId } = req.body;
+
+    const reminder = await Reminder.findOneAndDelete({ _id: id, userId });
+
+    if (!reminder) {
+      return res.status(404).json({ success: false, message: "Reminder not found or not yours" });
+    }
+
+    res.json({ success: true, message: "Reminder deleted successfully" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Error deleting reminder', error: error.message });
+    console.error("Error deleting reminder:", error.message);
+    res.status(500).json({ success: false, message: "Error deleting reminder" });
   }
 };
 

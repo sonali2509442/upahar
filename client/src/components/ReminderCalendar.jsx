@@ -14,7 +14,9 @@ export default function ReminderCalendar() {
 
   async function fetchReminders() {
     try {
-      const { data } = await api.get("/api/reminders");
+      const userId = JSON.parse(localStorage.getItem("user"))?._id;
+const { data } = await api.get(`/api/reminders/${userId}`);
+
       if (data.success) setReminders(data.reminders);
     } catch (err) {
       console.error(err);

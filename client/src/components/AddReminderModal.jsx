@@ -35,7 +35,9 @@ export default function AddReminderModal({ initial, onClose }) {
       if (initial) {
         await api.put(`/api/reminders/${initial._id}`, form);
       } else {
-        await api.post('/api/reminders', form);
+        const userId = JSON.parse(localStorage.getItem("user"))?._id;
+await api.post('/api/reminders', { ...form, userId });
+
       }
       onClose();
     } catch (e) {
