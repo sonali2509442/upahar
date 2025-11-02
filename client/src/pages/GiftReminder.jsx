@@ -13,16 +13,24 @@ const GiftReminder = () => {
   });
   const [reminders, setReminders] = useState([]);
 
-  const fetchReminders = async () => {
-    try {
-      const userId = JSON.parse(localStorage.getItem("user"))?._id;
-const res = await axios.get(`https://upahar-backend.vercel.app/api/gift-reminder/${userId}`);
-
-      if (res.data.success) setReminders(res.data.reminders);
-    } catch (error) {
-      toast.error("Could not load reminders");
+ const fetchReminders = async () => {
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || !user._id) {
+      toast.error("Please log in to view reminders");
+      return;
     }
-  };
+
+    const res = await axios.get(
+      `https://upahar-backend.vercel.app/api/gift-reminder/${user._id}`
+    );
+
+    if (res.data.success) setReminders(res.data.reminders);
+  } catch (error) {
+    toast.error("Could not load reminders");
+  }
+};
+
 
   useEffect(() => {
     fetchReminders();
@@ -32,24 +40,30 @@ const res = await axios.get(`https://upahar-backend.vercel.app/api/gift-reminder
     setReminder({ ...reminder, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-     const userId = JSON.parse(localStorage.getItem("user"))?._id;
-const res = await axios.post("https://upahar-backend.vercel.app/api/gift-reminder", {
-  ...reminder,
-  userId,
-});
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user || !user._id) {
+    toast.error("Please log in before adding reminders");
+    return;
+  }
 
-      if (res.data.success) {
-        toast.success("🎁 Reminder added!");
-        setReminder({ name: "", occasion: "", date: "", note: "" });
-        fetchReminders();
-      }
-    } catch {
-      toast.error("Failed to save reminder");
+  try {
+    const res = await axios.post("https://upahar-backend.vercel.app/api/gift-reminder", {
+      ...reminder,
+      userId: user._id,
+    });
+
+    if (res.data.success) {
+      toast.success("🎁 Reminder added!");
+      setReminder({ name: "", occasion: "", date: "", note: "" });
+      fetchReminders();
     }
-  };
+  } catch {
+    toast.error("Failed to save reminder");
+  }
+};
+
 
   const handleDelete = async (id) => {
     try {
