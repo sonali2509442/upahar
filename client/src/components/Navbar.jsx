@@ -60,7 +60,7 @@ const Navbar = () => {
         <NavLink to="/products">All Products</NavLink>
         <NavLink to="/contact">Contact</NavLink>
 
-        {/* More Dropdown (Hover) */}
+        {/* More Dropdown */}
         <div className="relative group">
           <button className="hover:text-primary transition font-medium">
             More ▾
@@ -91,7 +91,7 @@ const Navbar = () => {
           </span>
         </div>
 
-        {/* ✅ User / Login */}
+        {/* User / Login */}
         {!user ? (
           <button
             onClick={() => setShowUserLogin(true)}
@@ -133,10 +133,21 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Mobile Menu Button */}
-      <button onClick={() => setOpen(!open)} aria-label="Menu" className="sm:hidden">
-        {open ? <RiCloseLine size={24} /> : <RiMenuLine size={24} />}
-      </button>
+      {/* ✅ Mobile Cart + Menu */}
+      <div className="flex items-center gap-4 sm:hidden">
+        {/* Cart icon for mobile */}
+        <div onClick={() => navigate("/cart")} className="relative cursor-pointer">
+          <FaShoppingCart size={20} />
+          <span className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[16px] h-[16px] flex items-center justify-center rounded-full">
+            {getCartCount()}
+          </span>
+        </div>
+
+        {/* Menu toggle */}
+        <button onClick={() => setOpen(!open)} aria-label="Menu">
+          {open ? <RiCloseLine size={24} /> : <RiMenuLine size={24} />}
+        </button>
+      </div>
 
       {/* Mobile Menu */}
       {open && (
@@ -144,7 +155,7 @@ const Navbar = () => {
           <NavLink to="/" onClick={() => setOpen(false)}>Home</NavLink>
           <NavLink to="/products" onClick={() => setOpen(false)}>All Products</NavLink>
           {user && <NavLink to="/myorders" onClick={() => setOpen(false)}>My Orders</NavLink>}
-          <NavLink to="/" onClick={() => setOpen(false)}>Contact</NavLink>
+          <NavLink to="/contact" onClick={() => setOpen(false)}>Contact</NavLink>
 
           {/* More section on mobile */}
           <div>
@@ -179,5 +190,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-
