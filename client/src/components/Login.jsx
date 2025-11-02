@@ -12,12 +12,16 @@ const Login = () => {
   const onSubmitHandler = async (e) => {
     try {
       e.preventDefault();
+      
+const { data } = await axios.post(
+  `/api/user/${state}`,
+  { name, email, password },
+  {
+    headers: { "Content-Type": "application/json" },
+    withCredentials: true, // ✅ Add this line
+  }
+);
 
-      const { data } = await axios.post(
-        `/api/user/${state}`,
-        { name, email, password },
-        { headers: { "Content-Type": "application/json" } }
-      );
 
       if (data.success) {
         navigate('/');

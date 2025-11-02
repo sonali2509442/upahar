@@ -63,7 +63,8 @@ app.set("trust proxy", 1);
 
 // ✅ Middlewares
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));//for bigger json data
+
 
 // ✅ Session middleware
 app.use(
