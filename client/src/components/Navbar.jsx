@@ -47,7 +47,8 @@ const Navbar = () => {
   }, [searchQuery]);
 
   return (
-    <nav className="flex items-center justify-between px-4 md:px-8 py-3 border-b border-gray-200 bg-white relative z-50">
+    <nav className="flex items-center justify-between flex-wrap px-4 md:px-8 py-3 border-b border-gray-200 bg-white relative z-50">
+
       
       {/* Logo */}
       <NavLink to="/" onClick={() => setOpen(false)}>
@@ -84,12 +85,14 @@ const Navbar = () => {
         </div>
 
         {/* Cart */}
-        <div onClick={() => navigate("/cart")} className="relative cursor-pointer">
-          <FaShoppingCart />
-          <span className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] flex items-center justify-center rounded-full">
-            {getCartCount()}
-          </span>
-        </div>
+       {/* Cart Icon — visible on all devices */}
+<div onClick={() => navigate("/cart")} className="relative cursor-pointer sm:hidden">
+  <FaShoppingCart size={22} />
+  <span className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] flex items-center justify-center rounded-full">
+    {getCartCount()}
+  </span>
+</div>
+
 
         {/* ✅ User / Login */}
         {!user ? (
