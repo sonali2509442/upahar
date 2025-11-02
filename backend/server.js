@@ -1,14 +1,15 @@
 import dotenv from "dotenv";
 dotenv.config();
-import connectDB from "./configs/db.js";
-connectDB();
-import session from "express-session";
-import cookieParser from "cookie-parser";
+
 import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import connectDB from "./configs/db.js";
+import connectCloudinary from "./configs/cloudinary.js";
 
 import userRoute from "./routes/userRoute.js";
 import sellerRoute from "./routes/sellerRoutes.js";
-import connectCloudinary from "./configs/cloudinary.js";
 import productRouter from "./routes/productRoutes.js";
 import cartRouter from "./routes/cartRoutes.js";
 import addressRouter from "./routes/addressRoutes.js";
@@ -18,9 +19,14 @@ import giftReminderRoutes from "./routes/giftReminderRoutes.js";
 import qrRoutes from "./routes/qrRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import { stripeWebhooks } from "./controllers/orderController.js";
-import cors from "cors";
 
 const app = express();
+
+// ✅ Enable cookies before anything else
+app.use(cookieParser());
+
+// ✅ Trust proxy (for secure cookies on Render/Vercel)
+app.set("trust proxy", 1);
 
 // ✅ Connect Database + Cloudinary
 const initServer = async () => {
@@ -34,10 +40,10 @@ const initServer = async () => {
 };
 initServer();
 
-// ✅ Stripe webhook (before express.json)
+// ✅ Stripe webhook (must be before express.json)
 app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
 
-// ✅ CORS configuration (robust)
+// ✅ CORS configuration
 const allowedOrigins = [
   "https://upahar-one.vercel.app", // frontend deployed
   "https://upahar-backend.vercel.app",
@@ -54,19 +60,14 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true,
+    credentials: true, // 🔥 allows cookies to be sent
   })
 );
 
-// ✅ Trust proxy for secure cookies (Vercel/Render)
-app.set("trust proxy", 1);
+// ✅ JSON middleware
+app.use(express.json({ limit: "10mb" }));
 
-// ✅ Middlewares
-app.use(cookieParser());
-app.use(express.json({ limit: "10mb" }));//for bigger json data
-
-
-// ✅ Session middleware
+// ✅ Session middleware (after cookieParser)
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "default_secret",
@@ -75,8 +76,8 @@ app.use(
     proxy: true,
     cookie: {
       httpOnly: true,
-     secure: process.env.NODE_ENV === "production", // true only online
-  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production", // true only in production
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
   })
@@ -99,7 +100,7 @@ app.use("/api/gift-reminder", giftReminderRoutes);
 app.use("/api/qr", qrRoutes);
 app.use("/api/reviews", reviewRoutes);
 
-// ✅ Error handler (so CORS headers always sent)
+// ✅ Error handler
 app.use((err, req, res, next) => {
   console.error("Server Error:", err);
   if (!res.headersSent) {
