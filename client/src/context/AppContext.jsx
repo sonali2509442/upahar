@@ -40,27 +40,25 @@ export const AppContextProvider = ({ children }) => {
   };
 
  
-  const fetchUser = async () => {
-    try {
-      const { data } = await axios.get("/api/user/is-auth");
-      
-     if (data.success) {
-  setUser(data.user);
-  setCartItems(data.user.cartItems || {});
-
-  // 💾 Save user to localStorage so GiftReminder can find it
-  localStorage.setItem("user", JSON.stringify(data.user));
-} else {
-  setUser(null);
-  localStorage.removeItem("user");
-}
-
-    } catch (error) {
+const fetchUser = async () => {
+  try {
+    const { data } = await axios.get("/api/user/is-auth");
+    if (data.success) {
+      setUser(data.user);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      setCartItems(data.user.cartItems || {});
+    } else {
       setUser(null);
-    } finally {
-      setUserLoaded(true);
+      localStorage.removeItem("user");
     }
-  };
+  } catch (error) {
+    setUser(null);
+    localStorage.removeItem("user");
+  } finally {
+    setUserLoaded(true);
+  }
+};
+
   
   const fetchProduct = async () => {
     try {

@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Gift, CalendarHeart, Trash2 } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
 
-
 const GiftReminder = () => {
   const [reminder, setReminder] = useState({
     name: "",
@@ -16,63 +15,71 @@ const GiftReminder = () => {
   const [reminders, setReminders] = useState([]);
   const { user } = useAppContext();
 
+  // Get user from context or localStorage
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const activeUser = user || storedUser;
 
- const fetchReminders = async () => {
-  try {
-   
-    if (!user || !user._id) {
-      toast.error("Please log in to view reminders");
-      return;
+  // Fetch all reminders for the logged-in user
+  const fetchReminders = async () => {
+    try {
+      if (!activeUser || !activeUser._id) {
+        toast.error("Please log in before viewing reminders");
+        return;
+      }
+
+      const res = await axios.get(
+        `https://upahar-backend.vercel.app/api/gift-reminder/${activeUser._id}`
+      );
+
+      if (res.data.success) setReminders(res.data.reminders);
+    } catch (error) {
+      toast.error("Could not load reminders");
     }
-
-    const res = await axios.get(
-      `https://upahar-backend.vercel.app/api/gift-reminder/${user._id}`
-    );
-
-    if (res.data.success) setReminders(res.data.reminders);
-  } catch (error) {
-    toast.error("Could not load reminders");
-  }
-};
-
+  };
 
   useEffect(() => {
     fetchReminders();
   }, []);
 
+  // Handle input change
   const handleChange = (e) => {
     setReminder({ ...reminder, [e.target.name]: e.target.value });
   };
 
- const handleSubmit = async (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  e.preventDefault();
-  
-  if (!user || !user._id) {
-    toast.error("Please log in before adding reminders");
-    return;
-  }
-
-  try {
-    const res = await axios.post("https://upahar-backend.vercel.app/api/gift-reminder", {
-      ...reminder,
-      userId: user._id,
-    });
-
-    if (res.data.success) {
-      toast.success("🎁 Reminder added!");
-      setReminder({ name: "", occasion: "", date: "", note: "" });
-      fetchReminders();
+    if (!activeUser || !activeUser._id) {
+      toast.error("Please log in before adding reminders");
+      return;
     }
-  } catch {
-    toast.error("Failed to save reminder");
-  }
-};
 
+    try {
+      const res = await axios.post(
+        "https://upahar-backend.vercel.app/api/gift-reminder",
+        {
+          ...reminder,
+          userId: activeUser._id,
+        }
+      );
 
+      if (res.data.success) {
+        toast.success("🎁 Reminder added!");
+        setReminder({ name: "", occasion: "", date: "", note: "" });
+        fetchReminders();
+      }
+    } catch {
+      toast.error("Failed to save reminder");
+    }
+  };
+
+  // Delete a reminder
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://upahar-backend.vercel.app/api/gift-reminder/${id}`);
+      await axios.delete(
+        `https://upahar-backend.vercel.app/api/gift-reminder/${id}`
+      );
       toast.success("Reminder deleted!");
       fetchReminders();
     } catch {
