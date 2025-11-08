@@ -22,13 +22,50 @@ import { stripeWebhooks } from "./controllers/orderController.js";
 
 const app = express();
 
-// ✅ Enable cookies before anything else
-app.use(cookieParser());
-
-// ✅ Trust proxy (for secure cookies on Render/Vercel)
+// ✅ Must come before all middleware for proxy setups
 app.set("trust proxy", 1);
 
-// ✅ Connect Database + Cloudinary
+// ✅ Allow these domains
+const allowedOrigins = [
+  "https://upahar-one.vercel.app",
+   // your frontend
+   "https://upahar-backend.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:5174",
+];
+
+// ✅ Proper CORS setup
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
+
+// ✅ Raw body for Stripe BEFORE JSON middleware
+app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
+
+// ✅ Regular middlewares
+app.use(express.json({ limit: "10mb" }));
+app.use(cookieParser());
+
+// ✅ Session setup
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "default_secret",
+    resave: false,
+    saveUninitialized: false,
+    proxy: true,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    },
+  })
+);
+
+// ✅ Connect DB + Cloudinary
 const initServer = async () => {
   try {
     await connectDB();
@@ -40,55 +77,11 @@ const initServer = async () => {
 };
 initServer();
 
-// ✅ Stripe webhook (must be before express.json)
-app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
-
-// ✅ CORS configuration
-const allowedOrigins = [
-  "https://upahar-one.vercel.app", // frontend deployed
-  "https://upahar-backend.vercel.app",
-  "http://localhost:5173",
-  "http://localhost:5174",
-];
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true, // 🔥 allows cookies to be sent
-  })
-);
-
-// ✅ JSON middleware
-app.use(express.json({ limit: "10mb" }));
-
-// ✅ Session middleware (after cookieParser)
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "default_secret",
-    resave: false,
-    saveUninitialized: false,
-    proxy: true,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true only in production
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    },
-  })
-);
-
-// ✅ Root route
+// ✅ Routes
 app.get("/", (req, res) => {
   res.send("🚀 Upahar Backend is running successfully!");
 });
 
-// ✅ API Routes
 app.use("/api/user", userRoute);
 app.use("/api/seller", sellerRoute);
 app.use("/api/product", productRouter);
@@ -111,5 +104,7 @@ app.use((err, req, res, next) => {
   }
 });
 
+// ✅ Export for Vercel
 export default app;
+
 
