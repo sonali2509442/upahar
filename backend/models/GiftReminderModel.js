@@ -7,11 +7,7 @@ const giftReminderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    name: {
-      type: String,
-      required: true,
-    },
-    occasion: {
+    title: {
       type: String,
       required: true,
     },
@@ -27,5 +23,6 @@ const giftReminderSchema = new mongoose.Schema(
 );
 
 const GiftReminder = mongoose.model("GiftReminder", giftReminderSchema);
+
 export default GiftReminder;
 

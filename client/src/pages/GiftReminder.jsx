@@ -13,14 +13,14 @@ const GiftReminder = () => {
   });
   const [reminders, setReminders] = useState([]);
 
-const fetchReminders = async () => {
-  try {
-    const res = await axios.get("https://upahar-backend.vercel.app/api/gift-reminder", { withCredentials: true });
-    if (res.data.success) setReminders(res.data.reminders);
-  } catch {
-    toast.error("Could not load reminders");
-  }
-};
+  const fetchReminders = async () => {
+    try {
+      const res = await axios.get("https://upahar-backend.vercel.app/api/gift-reminder");
+      if (res.data.success) setReminders(res.data.reminders);
+    } catch (error) {
+      toast.error("Could not load reminders");
+    }
+  };
 
   useEffect(() => {
     fetchReminders();
@@ -30,24 +30,19 @@ const fetchReminders = async () => {
     setReminder({ ...reminder, [e.target.name]: e.target.value });
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await axios.post(
-      "https://upahar-backend.vercel.app/api/gift-reminder",
-      reminder,
-      { withCredentials: true }
-    );
-
-    if (res.data.success) {
-      toast.success("🎁 Reminder added!");
-      setReminder({ name: "", occasion: "", date: "", note: "" });
-      fetchReminders();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("https://upahar-backend.vercel.app/api/gift-reminder", reminder);
+      if (res.data.success) {
+        toast.success("🎁 Reminder added!");
+        setReminder({ name: "", occasion: "", date: "", note: "" });
+        fetchReminders();
+      }
+    } catch {
+      toast.error("Failed to save reminder");
     }
-  } catch {
-    toast.error("Failed to save reminder");
-  }
-};
+  };
 
   const handleDelete = async (id) => {
     try {
