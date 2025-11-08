@@ -1,4 +1,6 @@
-import GiftReminder from "../models/giftRemindermodel";
+import GiftReminder from "../models/giftReminderModel.js";
+
+
 
 
 
