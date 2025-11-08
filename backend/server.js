@@ -44,28 +44,33 @@ initServer();
 app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
 
 // ✅ CORS configuration
+// ✅ CORS configuration (Fixed for Vercel)
+import cors from "cors";
+
 const allowedOrigins = [
   "https://upahar-one.vercel.app", // frontend deployed
-  "https://upahar-backend.vercel.app",
   "http://localhost:5173",
   "http://localhost:5174",
 ];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true, // 🔥 allows cookies to be sent
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
+// ✅ Handle preflight requests globally
+app.options("*", cors());
+
+
 // ✅ JSON middleware
 app.use(express.json({ limit: "10mb" }));
+// Ensure cookies are parsed for all cross-origin requests
+app.use(cookieParser());
+
 
 // ✅ Session middleware (after cookieParser)
 app.use(
