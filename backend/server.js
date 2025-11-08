@@ -28,6 +28,25 @@ app.use(cookieParser());
 // ✅ Trust proxy (for secure cookies on Render/Vercel)
 app.set("trust proxy", 1);
 
+// ✅ CORS configuration (clean & working)
+app.use(
+  cors({
+    origin: [
+      "https://upahar-one.vercel.app", // frontend deployed
+      "http://localhost:5173",
+      "http://localhost:5174",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,
+  })
+);
+
+// ✅ Parse JSON before routes
+app.use(express.json({ limit: "10mb" }));
+
+// ✅ Stripe webhook (must stay raw)
+app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
+
 // ✅ Connect Database + Cloudinary
 const initServer = async () => {
   try {
@@ -40,38 +59,6 @@ const initServer = async () => {
 };
 initServer();
 
-// ✅ Stripe webhook (must be before express.json)
-app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
-
-// ✅ CORS configuration
-// ✅ CORS configuration (Fixed for Vercel)
-import cors from "cors";
-
-const allowedOrigins = [
-  "https://upahar-one.vercel.app", // frontend deployed
-  "http://localhost:5173",
-  "http://localhost:5174",
-];
-
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
-// ✅ Handle preflight requests globally
-app.options("*", cors());
-
-
-// ✅ JSON middleware
-app.use(express.json({ limit: "10mb" }));
-// Ensure cookies are parsed for all cross-origin requests
-app.use(cookieParser());
-
-
 // ✅ Session middleware (after cookieParser)
 app.use(
   session({
@@ -81,7 +68,7 @@ app.use(
     proxy: true,
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true only in production
+      secure: process.env.NODE_ENV === "production", // true in production
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
@@ -117,4 +104,5 @@ app.use((err, req, res, next) => {
 });
 
 export default app;
+
 
