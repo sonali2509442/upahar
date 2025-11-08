@@ -7,7 +7,11 @@ const giftReminderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    title: {
+    name: {
+      type: String,
+      required: true,
+    },
+    occasion: {
       type: String,
       required: true,
     },
@@ -17,6 +21,7 @@ const giftReminderSchema = new mongoose.Schema(
     },
     note: {
       type: String,
+      default: "",
     },
   },
   { timestamps: true }

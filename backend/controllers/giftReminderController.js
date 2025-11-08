@@ -1,14 +1,5 @@
-import GiftReminder from "../models/GiftRemindermodel";
 
-
-
-
-
-
-
-
-
-
+import GiftReminder from ".../models/giftReminderModel.js";
 
 // Create reminder
 export const createReminder = async (req, res) => {
@@ -71,4 +62,3 @@ export const deleteReminder = async (req, res) => {
     });
   }
 };
-
