@@ -41,7 +41,7 @@ export const getReminders = async (req, res) => {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: "Error fetching reminders",
+      message: "Error fetching reminder",
       error: error.message,
     });
   }
