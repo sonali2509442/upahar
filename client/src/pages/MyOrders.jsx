@@ -71,15 +71,17 @@ const MyOrders = () => {
       ) : (
         <div className="grid md:grid-cols-2 gap-8">
           {myOrders.map((order) => {
-            // 🧮 Calculate totals
+            // Calculate subtotal
             const subtotal = order.items?.reduce((sum, item) => {
               const price = item.product?.offerPrice || 0;
-              const extraCharge = item.extraCharge || 0;
               const qty = item.quantity || 1;
-              return sum + (price + extraCharge) * qty;
+              return sum + price * qty;
             }, 0) || 0;
 
-            const qrCharge = order.qrCharge || 200; // Default 10 if not present
+            // ✅ Only apply QR charge if any item has qrCode
+            const qrCharge =
+              order.items?.some((item) => item.qrCode) ? 200 : 0;
+
             const tax = subtotal * 0.02; // 2% tax
             const totalAmount = subtotal + qrCharge + tax;
 
@@ -130,15 +132,16 @@ const MyOrders = () => {
                             <p className="text-gray-500 text-sm">
                               Quantity: {item.quantity || 1}
                             </p>
+                            {item.qrCode && (
+                              <p className="text-xs text-blue-500 mt-1">
+                                Includes QR customization
+                              </p>
+                            )}
                           </div>
                         </div>
                         <p className="text-primary font-semibold flex items-center text-lg">
                           <FaRupeeSign className="mr-1" />
-                          {(
-                            ((item.product?.offerPrice || 0) +
-                              (item.extraCharge || 0)) *
-                            (item.quantity || 1)
-                          ).toFixed(2)}
+                          {(item.product?.offerPrice * (item.quantity || 1)).toFixed(2)}
                         </p>
                       </div>
 
@@ -168,19 +171,36 @@ const MyOrders = () => {
                   <div className="pt-3 border-t border-gray-100 space-y-1 text-gray-700">
                     <div className="flex justify-between">
                       <span>Subtotal:</span>
-                      <span>{currency}{subtotal.toFixed(2)}</span>
+                      <span>
+                        {currency}
+                        {subtotal.toFixed(2)}
+                      </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>QR Charge:</span>
-                      <span>{currency}{qrCharge.toFixed(2)}</span>
-                    </div>
+
+                    {qrCharge > 0 && (
+                      <div className="flex justify-between">
+                        <span>QR Charge:</span>
+                        <span>
+                          {currency}
+                          {qrCharge.toFixed(2)}
+                        </span>
+                      </div>
+                    )}
+
                     <div className="flex justify-between">
                       <span>Tax (2%):</span>
-                      <span>{currency}{tax.toFixed(2)}</span>
+                      <span>
+                        {currency}
+                        {tax.toFixed(2)}
+                      </span>
                     </div>
+
                     <div className="flex justify-between font-semibold text-gray-900 text-base mt-1">
                       <span>Total Amount:</span>
-                      <span>{currency}{totalAmount.toFixed(2)}</span>
+                      <span>
+                        {currency}
+                        {totalAmount.toFixed(2)}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -205,6 +225,7 @@ const MyOrders = () => {
 };
 
 export default MyOrders;
+
 
 
 
