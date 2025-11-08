@@ -9,7 +9,7 @@ const MainBanner = () => {
             <img 
                 src="/images/top-view-bouquet-flowers-with-gift-box-copy-space (1).jpg" 
                 alt="banner"
-                className="w-full h-[500px] object-cover hidden md:block" 
+                className="w-full h-[600px] object-cover hidden md:block" 
             />
 
             {/* Mobile Image */}
