@@ -1,4 +1,8 @@
-import GiftReminder from "../models/giftReminderModel.js";
+import GiftReminder from "../models/giftReminderModels";
+
+
+
+
 
 // Create reminder
 export const createReminder = async (req, res) => {

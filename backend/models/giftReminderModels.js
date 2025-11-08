@@ -25,4 +25,3 @@ const giftReminderSchema = new mongoose.Schema(
 const GiftReminder = mongoose.model("GiftReminder", giftReminderSchema);
 
 export default GiftReminder;
-
