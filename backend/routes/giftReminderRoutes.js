@@ -1,13 +1,3 @@
-// import express from "express";
-// import { addReminder, getReminders } from "../controllers/giftReminderController.js";
-
-// const router = express.Router();
-
-// router.post("/add", addReminder);
-// router.get("/", getReminders);
-
-// export default router;
-
 
 
 

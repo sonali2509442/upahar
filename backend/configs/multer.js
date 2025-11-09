@@ -1,12 +1,5 @@
-// import multer from "multer";
-
-// export const upload = multer({storage:multer.diskStorage({})})
 
 
-
-
-// configs/multer.js
-// backend/configs/multer.js
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { v2 as cloudinary } from "cloudinary";
