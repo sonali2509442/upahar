@@ -163,22 +163,7 @@ const handleAddToCart = () => {
         </div>
       </div>
 
-      {/* Related Products */}
-      <div className="flex flex-col items-center mt-20">
-        <div className="flex flex-col items-center w-max">
-          <p>Related Products</p>
-          <div className="w-20 h-0.5 bg-pink-500 rounded-full mt-2"></div>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-6 lg:grid-cols-5 mt-6 w-full">
-          {relatedProducts
-            .filter((item) => item.inStock)
-            .map((item, index) => (
-              <ProductCard key={index} product={item} />
-            ))}
-        </div>
-      </div>
-
+      
       {/* QR Code Modal */}
       {showQRModal && (
         <AddQRCodeModal

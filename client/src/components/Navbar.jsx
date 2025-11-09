@@ -66,9 +66,7 @@ const Navbar = () => {
             More ▾
           </button>
           <div className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 opacity-0 group-hover:opacity-100 invisible group-hover:visible transform scale-95 group-hover:scale-100 transition-all duration-300 origin-top">
-            <NavLink to="/gift-reminder" className="block px-4 py-2 hover:bg-gray-100 transition">Gift Reminder</NavLink>
-            <NavLink to="/secret-sender" className="block px-4 py-2 hover:bg-gray-100 transition">Secret Sender</NavLink>
-            <NavLink to="/hybrid-gifting" className="block px-4 py-2 hover:bg-gray-100 transition">Hybrid Gifting</NavLink>
+            <NavLink to="/gift-reminder" className="block px-4 py-2 hover:bg-gray-100 transition">Gift Reminder</NavLink> 
           </div>
         </div>
 
